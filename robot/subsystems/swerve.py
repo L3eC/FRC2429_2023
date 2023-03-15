@@ -15,6 +15,7 @@ from wpimath.kinematics import (
 
 import swerveutils
 from maxswervemodule import MAXSwerveModule
+import navx
 from driveconstants import DriveConstants
 
 
@@ -52,7 +53,7 @@ class Swerve (SubsystemBase):
         )
 
         # The gyro sensor
-        self.gyro = wpilib.ADIS16470_IMU()
+        self.gyro = navx.AHRS.create_spi()
 
         # Slew rate filter variables for controlling lateral acceleration
         self.currentRotation = 0.0
