@@ -93,24 +93,16 @@ class RobotContainer:
 
         # The robot's subsystems
         self.drive = Swerve()
-        self.turret = Turret()
-        self.arm = Arm()
-        self.wrist = Wrist()
-        self.elevator = Elevator()
-        self.pneumatics = Pneumatics()
-        self.vision = Vision()
+        # self.turret = Turret()
+        # self.arm = Arm()
+        # self.wrist = Wrist()
+        # self.elevator = Elevator()
+        # self.pneumatics = Pneumatics()
+        # self.vision = Vision()
 
-        self.configureButtonBindings()
+        # self.configureButtonBindings()
 
         self.initialize_dashboard()
-
-        # Set up default drive command
-      #  if wpilib.RobotBase.isSimulation():
-
-        self.drive.setDefaultCommand(commands2.RunCommand(self.drive.drive(self.driver_controller.getRawAxis(4),
-                                                                           self.driver_controller.getRawAxis(1),
-                                                                           self.driver_controller.getRawAxis(0),
-                                                                           True, True)))
 
         # initialize the swerve drive
 
@@ -119,8 +111,16 @@ class RobotContainer:
                             SwerveModuleState(0, Rotation2d()),
                             SwerveModuleState(0, Rotation2d()),
                             SwerveModuleState(0, Rotation2d()))))
+        
+
+        self.drive.setDefaultCommand(commands2.RunCommand(self.drive.drive(# self.driver_controller.getRawAxis(4),
+                                                                           # self.driver_controller.getRawAxis(1),
+                                                                           # self.driver_controller.getRawAxis(0),
+                                                                           0, 0, 0,
+                                                                           True, True)))
+
         # initialize the turret
-        commands2.ScheduleCommand(TurretInitialize(container=self, turret=self.turret, samples=50)).initialize()
+        # commands2.ScheduleCommand(TurretInitialize(container=self, turret=self.turret, samples=50)).initialize()
 
     def set_start_time(self):  # call in teleopInit and autonomousInit in the robot
         self.start_time = time.time()
@@ -250,9 +250,7 @@ class RobotContainer:
         # )
 
     def initialize_dashboard(self):
-
         # lots of putdatas for testing on the dash
-        wpilib.SmartDashboard.putData()
         # wpilib.SmartDashboard.putData(TurretInitialize(container=self, turret=self.turret))
         # wpilib.SmartDashboard.putData(ScoreHiConeFromStow(container=self))
         # wpilib.SmartDashboard.putData(ScoreLowConeFromStow(container=self))
@@ -288,7 +286,9 @@ class RobotContainer:
         # self.autonomous_chooser.addOption('drive and balance', DriveAndBalance(self).withTimeout(15))
         # self.autonomous_chooser.addOption('station climb 2m', DriveClimber(self, self.drive, setpoint_distance=1.9).withTimeout(8))
         # self.autonomous_chooser.addOption('score hi drive and balance', ScoreDriveAndBalance(self))
+        pass
 
 
     def get_autonomous_command(self):
-        return self.autonomous_chooser.getSelected()
+        pass
+        # return self.autonomous_chooser.getSelected()
