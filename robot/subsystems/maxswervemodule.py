@@ -4,7 +4,7 @@ from wpimath.kinematics import SwerveModuleState, SwerveModulePosition
 from wpilib import AnalogEncoder
 import math
 
-from moduleconstants import ModuleConstants
+from subsystems.moduleconstants import ModuleConstants
 
 
 class MAXSwerveModule:
@@ -16,8 +16,6 @@ class MAXSwerveModule:
         MAXSwerve Module built with NEOs, SPARKS MAX, and a Through Bore
         Encoder.
         """
-        # TODO: If absolute encoder doesn't come with turning motor's sparkmax, add new parameter for
-        # absolute encoder and set the turning motor's sparkmax's feedback device to the absolute encoder
         self.chassisAngularOffset = 0
         self.desiredState = SwerveModuleState(0.0, Rotation2d())
 
@@ -64,7 +62,8 @@ class MAXSwerveModule:
 
         # Invert the turning encoder, since the output shaft rotates in the opposite direction of
         # the steering motor in the MAXSwerve Module.
-        self.turningEncoder.setInverted(ModuleConstants.kTurningEncoderInverted)
+        # self.turningEncoder.setInverted(ModuleConstants.kTurningEncoderInverted)
+
 
         # Enable PID wrap around for the turning motor. This will allow the PID
         # controller to go through 0 to get to the setpoint i.e. going from 350 degrees

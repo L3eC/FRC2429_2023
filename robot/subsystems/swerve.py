@@ -13,10 +13,10 @@ from wpimath.kinematics import (
     SwerveDrive4Odometry,
 )
 
-import swerveutils
-from maxswervemodule import MAXSwerveModule
+import subsystems.swerveutils as swerveutils
+from subsystems.maxswervemodule import MAXSwerveModule
 import navx
-from driveconstants import DriveConstants
+from .driveconstants import DriveConstants
 
 
 class Swerve (SubsystemBase):
