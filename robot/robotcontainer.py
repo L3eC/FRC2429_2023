@@ -112,12 +112,20 @@ class RobotContainer:
                             SwerveModuleState(0, Rotation2d()),
                             SwerveModuleState(0, Rotation2d()))))
         
-
-        self.drive.setDefaultCommand(commands2.RunCommand(self.drive.drive(# self.driver_controller.getRawAxis(4),
+        self.drive.setDefaultCommand(commands2.RunCommand(lambda: self.drive.drive(# self.driver_controller.getRawAxis(4),
                                                                            # self.driver_controller.getRawAxis(1),
                                                                            # self.driver_controller.getRawAxis(0),
                                                                            0, 0, 0,
-                                                                           True, True)))
+                                                                           True, True),
+                                                                           [self.drive]))
+                                                                        
+
+        # self.drive.setDefaultCommand(commands2.RunCommand(self.drive.drive(# self.driver_controller.getRawAxis(4),
+                                                                           # self.driver_controller.getRawAxis(1),
+                                                                           # self.driver_controller.getRawAxis(0),
+                                                                           # 0, 0, 0,
+                                                                           # True, True)),
+                                                                           # [self.drive])
 
         # initialize the turret
         # commands2.ScheduleCommand(TurretInitialize(container=self, turret=self.turret, samples=50)).initialize()

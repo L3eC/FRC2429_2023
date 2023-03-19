@@ -44,9 +44,17 @@ class DriveConstants:
     kFrontRightTurningCanId = 24
     kRearRightTurningCanId = 26
 
-    kFrontLeftAbsEncoderPort = 0
-    kFrontRightAbsEncoderPort = 1
-    kBackLeftAbsEncoderPort = 2
-    kBackRightAbsEncoderPort = 3
+    # Maximum values from each analog encoder because they're different for some reason
+    kFrontLeftAnalogConversionFactor = math.tau/6.060
+    kFrontRightAnalogConversionFactor = math.tau/6.176
+    kRearLeftAnalogConversionFactor = math.tau/6.135
+    kRearRightAnalogConversionFactor = math.tau/6.131
+
+    # Values of encoders when wheels pointed straight forward in radians
+    kFrontLeftAnalogStraight = 5.976 * kFrontLeftAnalogConversionFactor
+    kFrontRightAnalogStraight = 3.285 * kFrontRightAnalogConversionFactor # or 1.168 
+    kRearLeftAnalogStraight = 3.328 * kRearLeftAnalogConversionFactor
+    kRearRightAnalogStraight = 6.094 * kRearRightAnalogConversionFactor
+
 
     kGyroReversed = False

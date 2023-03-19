@@ -1,15 +1,18 @@
-from rev import CANSparkMax
+from rev import CANSparkMax, SparkMaxAbsoluteEncoder
 from wpimath.geometry import Rotation2d
 from wpimath.kinematics import SwerveModuleState, SwerveModulePosition
+import wpilib
 from wpilib import AnalogEncoder
 import math
+import random
 
 from subsystems.moduleconstants import ModuleConstants
 
 
 class MAXSwerveModule:
     def __init__(
-        self, drivingCANId: int, turningCANId: int, absEncoderPort: int, chassisAngularOffset: float
+        self, drivingCANId: int, turningCANId: int, absoluteEncoderPositionFactor: int, 
+        absoluteEncoderOffset: int,  chassisAngularOffset: float
     ) -> None:
         """Constructs a MAXSwerveModule and configures the driving and turning motor,
         encoder, and PID controller. This configuration is specific to the REV
@@ -25,8 +28,6 @@ class MAXSwerveModule:
         self.turningSparkMax = CANSparkMax(
             turningCANId, CANSparkMax.MotorType.kBrushless
         )
-
-        self.absoluteEncoder = AnalogEncoder(absEncoderPort)
         # Factory reset, so we get the SPARKS MAX to a known state before configuring
         # them. This is useful in case a SPARK MAX is swapped out.
         self.drivingSparkMax.restoreFactoryDefaults()
@@ -34,7 +35,11 @@ class MAXSwerveModule:
 
         # Setup encoders and PID controllers for the driving and turning SPARKS MAX.
         self.drivingEncoder = self.drivingSparkMax.getEncoder()
+        # We seem to have 3 encoders (driving, turning, absolute turning) but only
+        # 2 sparkmaxes, so this assumes that the absolute turning is the analog of
+        # the turning sparkmax
         self.turningEncoder = self.turningSparkMax.getEncoder()
+        self.absoluteEncoder = self.turningSparkMax.getAnalog()
         self.drivingPIDController = self.drivingSparkMax.getPIDController()
         self.turningPIDController = self.turningSparkMax.getPIDController()
         self.drivingPIDController.setFeedbackDevice(self.drivingEncoder)
@@ -58,6 +63,12 @@ class MAXSwerveModule:
         )
         self.turningEncoder.setVelocityConversionFactor(
             ModuleConstants.kTurningEncoderVelocityFactor
+        )
+        
+        # Apply position conversion factor for the absolute encoder. We
+        # want this in radians. 
+        self.absoluteEncoder.setPositionConversionFactor(
+            ModuleConstants.kAbsoluteEncoderPositionFactor
         )
 
         # Invert the turning encoder, since the output shaft rotates in the opposite direction of
@@ -115,7 +126,15 @@ class MAXSwerveModule:
         self.desiredState.angle = Rotation2d(self.turningEncoder.getPosition())
 
         self.drivingEncoder.setPosition(0)
-        self.turningEncoder.setPosition(math.tau*self.absoluteEncoder.getAbsolutePosition())
+
+        analogOutputs = []
+        for sampleIter in range(50):
+            analogOutputs.append(self.absoluteEncoder.getPosition())
+            print("Appending absolute encoder position...")
+        
+        print("Analog outputs: ", analogOutputs)
+        smoothedAnalogOutputs = sum(analogOutputs)/50
+        self.turningEncoder.setPosition(smoothedAnalogOutputs + absoluteEncoderOffset)
 
     def getState(self) -> SwerveModuleState:
         """Returns the current state of the module.

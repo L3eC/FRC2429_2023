@@ -27,28 +27,32 @@ class Swerve (SubsystemBase):
         self.frontLeft = MAXSwerveModule(
             DriveConstants.kFrontLeftDrivingCanId,
             DriveConstants.kFrontLeftTurningCanId,
-            DriveConstants.kFrontLeftAbsEncoderPort,
+            DriveConstants.kFrontLeftAnalogConversionFactor,
+            DriveConstants.kFrontLeftAnalogStraight,
             DriveConstants.kFrontLeftChassisAngularOffset,
         )
 
         self.frontRight = MAXSwerveModule(
             DriveConstants.kFrontRightDrivingCanId,
             DriveConstants.kFrontRightTurningCanId,
-            DriveConstants.kFrontRightAbsEncoderPort,
+            DriveConstants.kFrontRightAnalogConversionFactor,
+            DriveConstants.kFrontRightAnalogStraight,
             DriveConstants.kFrontRightChassisAngularOffset,
         )
 
         self.rearLeft = MAXSwerveModule(
             DriveConstants.kRearLeftDrivingCanId,
             DriveConstants.kRearLeftTurningCanId,
-            DriveConstants.kBackLeftAbsEncoderPort,
+            DriveConstants.kRearLeftAnalogConversionFactor,
+            DriveConstants.kRearLeftAnalogStraight,
             DriveConstants.kBackLeftChassisAngularOffset,
         )
 
         self.rearRight = MAXSwerveModule(
             DriveConstants.kRearRightDrivingCanId,
             DriveConstants.kRearRightTurningCanId,
-            DriveConstants.kBackRightAbsEncoderPort,
+            DriveConstants.kRearRightAnalogConversionFactor,
+            DriveConstants.kRearRightAnalogStraight,
             DriveConstants.kBackRightChassisAngularOffset,
         )
 
