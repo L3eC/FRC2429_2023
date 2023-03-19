@@ -100,24 +100,23 @@ class RobotContainer:
         # self.pneumatics = Pneumatics()
         # self.vision = Vision()
 
-        # self.configureButtonBindings()
+        self.configureButtonBindings()
 
         self.initialize_dashboard()
 
         # initialize the swerve drive
 
         commands2.ScheduleCommand(self.drive.setModuleStates(
-                            (SwerveModuleState(0, Rotation2d()),
-                            SwerveModuleState(0, Rotation2d()),
-                            SwerveModuleState(0, Rotation2d()),
-                            SwerveModuleState(0, Rotation2d()))))
+                            (SwerveModuleState(0, Rotation2d(0)),
+                            SwerveModuleState(0, Rotation2d(0)),
+                            SwerveModuleState(0, Rotation2d(0)),
+                            SwerveModuleState(0, Rotation2d(0)))))
         
-        self.drive.setDefaultCommand(commands2.RunCommand(lambda: self.drive.drive(# self.driver_controller.getRawAxis(4),
-                                                                           # self.driver_controller.getRawAxis(1),
-                                                                           # self.driver_controller.getRawAxis(0),
-                                                                           0, 0, 0,
-                                                                           True, True),
-                                                                           [self.drive]))
+        self.drive.setDefaultCommand(commands2.RunCommand(lambda: self.drive.drive(self.driver_controller.getRawAxis(0),
+                                                                         self.driver_controller.getRawAxis(1),
+                                                                         self.driver_controller.getRawAxis(4),
+                                                                        True, True),
+                                                                        [self.drive]))
                                                                         
 
         # self.drive.setDefaultCommand(commands2.RunCommand(self.drive.drive(# self.driver_controller.getRawAxis(4),
@@ -179,83 +178,83 @@ class RobotContainer:
 
         # All untested still
         # bind commands to driver
-        self.buttonY.whileHeld(ChargeStationBalance(self, self.drive, velocity=10, tolerance=10))
-        self.buttonBack.whenPressed(CompressorToggle(self, self.pneumatics, force="stop"))
-        self.buttonStart.whenPressed(CompressorToggle(self, self.pneumatics, force="start"))
-        self.buttonRB.whenPressed(ReleaseAndStow(container=self).withTimeout(4))
-
-        # bind commands to co-pilot
-        # self.co_buttonLB.whenPressed(ManipulatorToggle(self, self.pneumatics, force="close"))
-        # self.co_buttonRB.whenPressed(ManipulatorToggle(self, self.pneumatics, force="open"))
-        self.co_buttonRB.whenPressed(ManipulatorToggle(self, self.pneumatics))
-
-        # self.co_buttonA.whileHeld(GenericDrive(self, self.turret, max_velocity=constants.k_PID_dict_vel_turret["SM_MaxVel"], axis=0, invert_axis=False))
-        # self.co_buttonB.whileHeld(GenericDrive(self, self.elevator, max_velocity=constants.k_PID_dict_vel_elevator["SM_MaxVel"], axis=1, invert_axis=True))
-        # self.co_buttonY.whileHeld(GenericDrive(self, self.arm, max_velocity=constants.k_PID_dict_vel_arm["SM_MaxVel"], axis=1, invert_axis=True))
-        # self.co_buttonX.whileHeld(GenericDrive(self, self.wrist, max_velocity=constants.k_PID_dict_vel_wrist["SM_MaxVel"], axis=1, invert_axis=True))
-
-        # self.co_buttonBack.whenPressed(SafeCarry(self))
-        self.co_buttonBack.whenPressed(TurretMove(self, self.turret, setpoint=0, wait_to_finish=False))
-        self.co_buttonStart.whenPressed(TurretMoveByVision(self, turret=self.turret, vision=self.vision))
-        self.co_buttonLeftAxis.whenPressed(TurretToggle(container=self, turret=self.turret, wait_to_finish=False))
-        self.co_buttonRightAxis.whenPressed(TurretToggle(container=self, turret=self.turret, wait_to_finish=False))
-
-        preset_command_map = [
-            (self.CommandSelector.TURRET_UP, TurretMove(self, self.turret, direction="up", wait_to_finish=False)),
-            (self.CommandSelector.TURRET_DOWN, TurretMove(self, self.turret, direction="down", wait_to_finish=False)),
-            (self.CommandSelector.TURRET_UP_DRIVE, GenericDrive(self, self.turret, max_velocity=constants.k_PID_dict_vel_turret["SM_MaxVel"], input_type='dpad', direction=1)),
-            (self.CommandSelector.TURRET_DOWN_DRIVE, GenericDrive(self, self.turret, max_velocity=constants.k_PID_dict_vel_turret["SM_MaxVel"], input_type='dpad', direction=-1)),
-            (self.CommandSelector.ELEVATOR_UP, ElevatorMove(self, self.elevator, direction="up", wait_to_finish=False)),
-            (self.CommandSelector.ELEVATOR_DOWN, ElevatorMove(self, self.elevator, direction="down", wait_to_finish=False)),
-            (self.CommandSelector.ELEVATOR_UP_DRIVE, GenericDrive(self, self.elevator, max_velocity=constants.k_PID_dict_vel_elevator["SM_MaxVel"], input_type='dpad', direction=1)),
-            (self.CommandSelector.ELEVATOR_DOWN_DRIVE, GenericDrive(self, self.elevator, max_velocity=constants.k_PID_dict_vel_elevator["SM_MaxVel"], input_type='dpad', direction=-1)),
-            (self.CommandSelector.ARM_UP, ArmMove(self, self.arm, direction="up", wait_to_finish=False)),
-            (self.CommandSelector.ARM_DOWN, ArmMove(self, self.arm, direction="down", wait_to_finish=False)),
-            (self.CommandSelector.ARM_UP_DRIVE, GenericDrive(self, self.arm, max_velocity=constants.k_PID_dict_vel_arm["SM_MaxVel"], input_type='dpad', direction=1)),
-            (self.CommandSelector.ARM_DOWN_DRIVE, GenericDrive(self, self.arm, max_velocity=constants.k_PID_dict_vel_arm["SM_MaxVel"], input_type='dpad', direction=-1)),
-            (self.CommandSelector.WRIST_UP, WristMove(self, self.wrist, direction="down", wait_to_finish=False)),
-            (self.CommandSelector.WRIST_DOWN, WristMove(self, self.wrist, direction="up", wait_to_finish=False)),
-            (self.CommandSelector.WRIST_UP_DRIVE, GenericDrive(self, self.wrist, max_velocity=constants.k_PID_dict_vel_wrist["SM_MaxVel"], control_type='velocity', input_type='dpad', direction=1, invert_axis=True)),
-            (self.CommandSelector.WRIST_DOWN_DRIVE, GenericDrive(self, self.wrist, max_velocity=constants.k_PID_dict_vel_wrist["SM_MaxVel"], control_type='velocity', input_type='dpad', direction=-1, invert_axis=True)),
-            (self.CommandSelector.NONE, commands2.WaitCommand(0)),
-        ]
-
-        self.co_buttonUp.whileHeld(commands2.SelectCommand(
-            lambda: self.select_preset("UP_DRIVE"),
-            preset_command_map,
-        ))
-
-        self.co_buttonDown.whileHeld(commands2.SelectCommand(
-            lambda: self.select_preset("DOWN_DRIVE"),
-            preset_command_map,
-        ))
-
-        self.co_buttonLeft.whenPressed(commands2.SelectCommand(
-            lambda: self.select_preset("DOWN"),
-            preset_command_map,
-        ))
-
-        self.co_buttonRight.whenPressed(commands2.SelectCommand(
-            lambda: self.select_preset("UP"),
-            preset_command_map,
-        ))
-
-        # testing turret and elevator
-        enable_testing = False
-        if enable_testing:
-            self.buttonRight.whenPressed(TurretMove(self, self.turret, direction='up', wait_to_finish=True).withTimeout(2))
-            self.buttonLeft.whenPressed(TurretMove(self, self.turret, direction='down', wait_to_finish=True).withTimeout(2))
-            self.buttonDown.whenPressed(ElevatorMove(self, self.elevator, direction='up', wait_to_finish=True).withTimeout(1))
-            self.buttonUp.whenPressed(ElevatorMove(self, self.elevator, direction='down', wait_to_finish=True).withTimeout(1))
-            # manipulator
-            self.buttonRB.whenPressed(ManipulatorToggle(container=self, pneumatics=self.pneumatics, force='open'))
-            self.buttonLB.whenPressed(ManipulatorToggle(container=self, pneumatics=self.pneumatics, force='close'))
-
-            #self.co_buttonRB.whileHeld(ElevatorDrive(container=self, elevator=self.elevator, button=self.co_buttonRB))
-
-        # commands2.button.JoystickButton(self.driverController, 3).whenHeld(
-        #     HalveDriveSpeed(self.drive)
-        # )
+#         self.buttonY.whileHeld(ChargeStationBalance(self, self.drive, velocity=10, tolerance=10))
+#         self.buttonBack.whenPressed(CompressorToggle(self, self.pneumatics, force="stop"))
+#         self.buttonStart.whenPressed(CompressorToggle(self, self.pneumatics, force="start"))
+#         self.buttonRB.whenPressed(ReleaseAndStow(container=self).withTimeout(4))
+# 
+#         # bind commands to co-pilot
+#         # self.co_buttonLB.whenPressed(ManipulatorToggle(self, self.pneumatics, force="close"))
+#         # self.co_buttonRB.whenPressed(ManipulatorToggle(self, self.pneumatics, force="open"))
+#         self.co_buttonRB.whenPressed(ManipulatorToggle(self, self.pneumatics))
+# 
+#         # self.co_buttonA.whileHeld(GenericDrive(self, self.turret, max_velocity=constants.k_PID_dict_vel_turret["SM_MaxVel"], axis=0, invert_axis=False))
+#         # self.co_buttonB.whileHeld(GenericDrive(self, self.elevator, max_velocity=constants.k_PID_dict_vel_elevator["SM_MaxVel"], axis=1, invert_axis=True))
+#         # self.co_buttonY.whileHeld(GenericDrive(self, self.arm, max_velocity=constants.k_PID_dict_vel_arm["SM_MaxVel"], axis=1, invert_axis=True))
+#         # self.co_buttonX.whileHeld(GenericDrive(self, self.wrist, max_velocity=constants.k_PID_dict_vel_wrist["SM_MaxVel"], axis=1, invert_axis=True))
+# 
+#         # self.co_buttonBack.whenPressed(SafeCarry(self))
+#         self.co_buttonBack.whenPressed(TurretMove(self, self.turret, setpoint=0, wait_to_finish=False))
+#         self.co_buttonStart.whenPressed(TurretMoveByVision(self, turret=self.turret, vision=self.vision))
+#         self.co_buttonLeftAxis.whenPressed(TurretToggle(container=self, turret=self.turret, wait_to_finish=False))
+#         self.co_buttonRightAxis.whenPressed(TurretToggle(container=self, turret=self.turret, wait_to_finish=False))
+# 
+#         preset_command_map = [
+#             (self.CommandSelector.TURRET_UP, TurretMove(self, self.turret, direction="up", wait_to_finish=False)),
+#             (self.CommandSelector.TURRET_DOWN, TurretMove(self, self.turret, direction="down", wait_to_finish=False)),
+#             (self.CommandSelector.TURRET_UP_DRIVE, GenericDrive(self, self.turret, max_velocity=constants.k_PID_dict_vel_turret["SM_MaxVel"], input_type='dpad', direction=1)),
+#             (self.CommandSelector.TURRET_DOWN_DRIVE, GenericDrive(self, self.turret, max_velocity=constants.k_PID_dict_vel_turret["SM_MaxVel"], input_type='dpad', direction=-1)),
+#             (self.CommandSelector.ELEVATOR_UP, ElevatorMove(self, self.elevator, direction="up", wait_to_finish=False)),
+#             (self.CommandSelector.ELEVATOR_DOWN, ElevatorMove(self, self.elevator, direction="down", wait_to_finish=False)),
+#             (self.CommandSelector.ELEVATOR_UP_DRIVE, GenericDrive(self, self.elevator, max_velocity=constants.k_PID_dict_vel_elevator["SM_MaxVel"], input_type='dpad', direction=1)),
+#             (self.CommandSelector.ELEVATOR_DOWN_DRIVE, GenericDrive(self, self.elevator, max_velocity=constants.k_PID_dict_vel_elevator["SM_MaxVel"], input_type='dpad', direction=-1)),
+#             (self.CommandSelector.ARM_UP, ArmMove(self, self.arm, direction="up", wait_to_finish=False)),
+#             (self.CommandSelector.ARM_DOWN, ArmMove(self, self.arm, direction="down", wait_to_finish=False)),
+#             (self.CommandSelector.ARM_UP_DRIVE, GenericDrive(self, self.arm, max_velocity=constants.k_PID_dict_vel_arm["SM_MaxVel"], input_type='dpad', direction=1)),
+#             (self.CommandSelector.ARM_DOWN_DRIVE, GenericDrive(self, self.arm, max_velocity=constants.k_PID_dict_vel_arm["SM_MaxVel"], input_type='dpad', direction=-1)),
+#             (self.CommandSelector.WRIST_UP, WristMove(self, self.wrist, direction="down", wait_to_finish=False)),
+#             (self.CommandSelector.WRIST_DOWN, WristMove(self, self.wrist, direction="up", wait_to_finish=False)),
+#             (self.CommandSelector.WRIST_UP_DRIVE, GenericDrive(self, self.wrist, max_velocity=constants.k_PID_dict_vel_wrist["SM_MaxVel"], control_type='velocity', input_type='dpad', direction=1, invert_axis=True)),
+#             (self.CommandSelector.WRIST_DOWN_DRIVE, GenericDrive(self, self.wrist, max_velocity=constants.k_PID_dict_vel_wrist["SM_MaxVel"], control_type='velocity', input_type='dpad', direction=-1, invert_axis=True)),
+#             (self.CommandSelector.NONE, commands2.WaitCommand(0)),
+#         ]
+# 
+#         self.co_buttonUp.whileHeld(commands2.SelectCommand(
+#             lambda: self.select_preset("UP_DRIVE"),
+#             preset_command_map,
+#         ))
+# 
+#         self.co_buttonDown.whileHeld(commands2.SelectCommand(
+#             lambda: self.select_preset("DOWN_DRIVE"),
+#             preset_command_map,
+#         ))
+# 
+#         self.co_buttonLeft.whenPressed(commands2.SelectCommand(
+#             lambda: self.select_preset("DOWN"),
+#             preset_command_map,
+#         ))
+# 
+#         self.co_buttonRight.whenPressed(commands2.SelectCommand(
+#             lambda: self.select_preset("UP"),
+#             preset_command_map,
+#         ))
+# 
+#         # testing turret and elevator
+#         enable_testing = False
+#         if enable_testing:
+#             self.buttonRight.whenPressed(TurretMove(self, self.turret, direction='up', wait_to_finish=True).withTimeout(2))
+#             self.buttonLeft.whenPressed(TurretMove(self, self.turret, direction='down', wait_to_finish=True).withTimeout(2))
+#             self.buttonDown.whenPressed(ElevatorMove(self, self.elevator, direction='up', wait_to_finish=True).withTimeout(1))
+#             self.buttonUp.whenPressed(ElevatorMove(self, self.elevator, direction='down', wait_to_finish=True).withTimeout(1))
+#             # manipulator
+#             self.buttonRB.whenPressed(ManipulatorToggle(container=self, pneumatics=self.pneumatics, force='open'))
+#             self.buttonLB.whenPressed(ManipulatorToggle(container=self, pneumatics=self.pneumatics, force='close'))
+# 
+#             #self.co_buttonRB.whileHeld(ElevatorDrive(container=self, elevator=self.elevator, button=self.co_buttonRB))
+# 
+#         # commands2.button.JoystickButton(self.driverController, 3).whenHeld(
+#         #     HalveDriveSpeed(self.drive)
+#         # )
 
     def initialize_dashboard(self):
         # lots of putdatas for testing on the dash

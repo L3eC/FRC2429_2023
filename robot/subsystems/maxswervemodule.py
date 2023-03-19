@@ -35,11 +35,9 @@ class MAXSwerveModule:
 
         # Setup encoders and PID controllers for the driving and turning SPARKS MAX.
         self.drivingEncoder = self.drivingSparkMax.getEncoder()
-        # We seem to have 3 encoders (driving, turning, absolute turning) but only
-        # 2 sparkmaxes, so this assumes that the absolute turning is the analog of
-        # the turning sparkmax
         self.turningEncoder = self.turningSparkMax.getEncoder()
         self.absoluteEncoder = self.turningSparkMax.getAnalog()
+
         self.drivingPIDController = self.drivingSparkMax.getPIDController()
         self.turningPIDController = self.turningSparkMax.getPIDController()
         self.drivingPIDController.setFeedbackDevice(self.drivingEncoder)
@@ -68,7 +66,7 @@ class MAXSwerveModule:
         # Apply position conversion factor for the absolute encoder. We
         # want this in radians. 
         self.absoluteEncoder.setPositionConversionFactor(
-            ModuleConstants.kAbsoluteEncoderPositionFactor
+            absoluteEncoderPositionFactor
         )
 
         # Invert the turning encoder, since the output shaft rotates in the opposite direction of
@@ -130,9 +128,7 @@ class MAXSwerveModule:
         analogOutputs = []
         for sampleIter in range(50):
             analogOutputs.append(self.absoluteEncoder.getPosition())
-            print("Appending absolute encoder position...")
         
-        print("Analog outputs: ", analogOutputs)
         smoothedAnalogOutputs = sum(analogOutputs)/50
         self.turningEncoder.setPosition(smoothedAnalogOutputs + absoluteEncoderOffset)
 

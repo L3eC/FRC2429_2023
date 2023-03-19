@@ -37,17 +37,14 @@ class ModuleConstants:
     kTurningEncoderPositionPIDMinInput = 0  # radian
     kTurningEncoderPositionPIDMaxInput = kTurningEncoderPositionFactor  # radian
     
-    kAbsoluteEncoderPositionFactor = math.tau/5 # For some reason, the encoders are outputting 0-~6.14,
-                                                # so TODO: change denominator when we know what's going on
-
-    kDrivingP = 0.04
+    kDrivingP = 0.01
     kDrivingI = 0
     kDrivingD = 0
     kDrivingFF = 1 / kDriveWheelFreeSpeedRps
     kDrivingMinOutput = -1
     kDrivingMaxOutput = 1
 
-    kTurningP = 1
+    kTurningP = 0.5
     kTurningI = 0
     kTurningD = 0
     kTurningFF = 0

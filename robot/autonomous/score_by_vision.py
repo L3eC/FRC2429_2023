@@ -32,8 +32,8 @@ class ScoreByVision(commands2.CommandBase):
         self.armSetpoint = None
         if self.vision.camera_values[self.color]['targets'] > 0:
             self.turretSetpoint = turretPosition + self.vision.camera_values[self.color]['rotation_entry']
-            self.armSetPoint = armPosition + :w
-        self.vision.camera_values[self.color]['distance_entry']
+            self.armSetPoint = armPosition
+            self.vision.camera_values[self.color]['distance_entry']
         else:  # try to find another target for loading zone
             colors = ['green', 'yellow', 'purple']
             for color in colors:
